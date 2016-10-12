@@ -1,16 +1,5 @@
-//===================================================================
-// program server2_tcp
-// tcp server (receives from and sends msg to client)
-// usage (command line):  server2_tcp  portnumber
-// changed by Paulo Coimbra, 2014-10-25
-/* A simple server in the internet domain using TCP
-   The port number is passed as an argument 
-   This version runs forever, forking off a separate 
-   process for each connection
-*/
-//===================================================================
 #include <stdio.h>
-#include <sys/types.h> 
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 //===================================================================
@@ -27,7 +16,7 @@ int main(int argc, char *argv[]) {
     struct sockaddr_in serv_addr, cli_addr;  //server addresses data
 
     //---presentation msg...
-    printf("\n\n\nProgram for TCP sockets (server2)\n\n\n");
+    printf("\n\n\nProgram for TCP sockets (server)\n\n\n");
 
     //---check command parameters...
     if (argc < 2) {
@@ -37,7 +26,7 @@ int main(int argc, char *argv[]) {
 
     //---creates tcp welcome socket (stream)...
      sockfd = socket(AF_INET, SOCK_STREAM, 0);
-     if (sockfd < 0) 
+     if (sockfd < 0)
         error("ERROR opening socket");
      bzero((char *) &serv_addr, sizeof(serv_addr));
      portno = atoi(argv[1]);
@@ -45,16 +34,16 @@ int main(int argc, char *argv[]) {
      serv_addr.sin_addr.s_addr = INADDR_ANY;
      serv_addr.sin_port = htons(portno);
      if (bind(sockfd, (struct sockaddr *) &serv_addr,
-              sizeof(serv_addr)) < 0) 
+              sizeof(serv_addr)) < 0)
                   error("ERROR on binding");
 	//---waits for clients
-     listen(sockfd,5); 
+     listen(sockfd,5);
      clilen = sizeof(cli_addr);
 
 	//---forever cicle for clients
      while (1) {
 	    //---accepts a new client
-         newsockfd = accept(sockfd, 
+         newsockfd = accept(sockfd,
                (struct sockaddr *) &cli_addr, &clilen);
          if (newsockfd < 0) error("ERROR on accept");
          pid = fork();
@@ -70,14 +59,14 @@ int main(int argc, char *argv[]) {
 }
 //===================================================================
 /******** DOSTUFF() *********************
- There is a separate instance of this function 
+ There is a separate instance of this function
  for each connection.  It handles all communication
  once a connnection has been established.
  *****************************************/
 void dostuff (int sock) {
    int n;
    char buffer[256];
-      
+
    //---reads and prints message from client...
    bzero(buffer,256);
    n = read(sock,buffer,255);
@@ -90,4 +79,3 @@ void dostuff (int sock) {
 }
 //===================================================================
 //===================================================================
-
